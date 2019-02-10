@@ -3,7 +3,6 @@ package de.sebdas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.List;
 import java.util.Set;
 
 import static de.sebdas.SnakeGame.scale;
@@ -43,12 +42,14 @@ class Painter {
   }
 
   private void paintSnake() {
-    final Coordinate snakeHead = world.getSnake().getHead();
+    final Snake snake = world.getSnake();
     gc.setFill(Color.CORNFLOWERBLUE);
-    gc.fillRect(scale(snakeHead.getX()),
-                scale(snakeHead.getY()),
-                tileSize,
-                tileSize);
+    for (final Coordinate segment : snake.getSegments()) {
+      gc.fillRect(scale(segment.getX()),
+                  scale(segment.getY()),
+                  tileSize,
+                  tileSize);
+    }
   }
 
 }

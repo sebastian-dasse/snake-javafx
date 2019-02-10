@@ -4,8 +4,9 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toCollection;
 
 class World implements Observable {
   private static final int WIDTH_TILES  = 15;
@@ -54,35 +55,36 @@ class World implements Observable {
   }
 
   void pulse() {
-    snake.pulse();
-    feedSnake();
+    updateSnake();
     notifyListeners();
   }
 
-  private void feedSnake() {
-    final boolean didSnakeEat = food.remove(snake.getHead());
-    if (didSnakeEat) {
-      System.out.println("yum!");
+  private void updateSnake() {
+    final boolean wasHeadInFood = food.remove(snake.getHead());
+    if (wasHeadInFood) {
+      snake.grow();
       if (food.isEmpty()) {
         food = createFood();
       }
+    } else {
+      snake.move();
     }
   }
 
   void onLeft() {
-    snake.moveLeft();
+    snake.turnLeft();
   }
 
   void onRight() {
-    snake.moveRight();
+    snake.turnRight();
   }
 
   void onUp() {
-    snake.moveUp();
+    snake.turnUp();
   }
 
   void onDown() {
-    snake.moveDown();
+    snake.turnDown();
   }
 
   Coordinate move(final Coordinate coordinate, final Direction direction) {
@@ -95,11 +97,10 @@ class World implements Observable {
   }
 
   private Set<Coordinate> createFood() {
-
-    // TODO:
     final int biteCount = random.nextInt(2) + 1;
-
-    return new HashSet<>(asList(createRandomCoordinate(), createRandomCoordinate()));
+    return Stream.generate(this::createRandomCoordinate)
+                 .limit(biteCount)
+                 .collect(toCollection(HashSet::new));
   }
 
   private Coordinate createRandomCoordinate() {

@@ -6,7 +6,7 @@
 - [x] continuous snake movement
 - [x] let the snake eat some food (without growing yet)
 - [x] random food placement
-- [ ] let the snake grow
+- [x] let the snake grow
 - [ ] collision detection
 - [ ] pause, resume and exit the game
 - [ ] increased snake speed over time
