@@ -5,15 +5,17 @@ import javafx.animation.AnimationTimer;
 class GameLoop {
   private static final int UPDATE_INTERVAL_NANOS = 18_000_000 * 10;
 
-  private final World world;
-  private Painter painter;
-  private AnimationTimer animationTimer;
+  private final Painter painter;
+  private final AnimationTimer animationTimer;
+  private World world;
 
-  GameLoop(final World world, final Painter painter) {
-    this.world = world;
+  GameLoop(final Painter painter) {
     this.painter = painter;
     this.animationTimer = createAnimationTimer();
+  }
 
+  void setWorld(final World world) {
+    this.world = world;
     world.addListener(observable -> painter.paint(world));
   }
 
@@ -47,5 +49,4 @@ class GameLoop {
   void stop() {
     animationTimer.stop();
   }
-
 }

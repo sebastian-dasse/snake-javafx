@@ -15,27 +15,36 @@ import java.util.Map;
 public class SnakeGame extends Application {
   private static final double TILE_SIZE = 50.0;
 
-  private final Canvas canvas;
-  private final Painter painter;
-  private GameLoop gameLoop;
-  private KeyHandler keyHandler;
-
-  public SnakeGame() {
-    final World world = new World();
-    this.canvas = new Canvas(scale(world.getWidth()), scale(world.getHeight()));
-    final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    this.painter = new Painter(graphicsContext, TILE_SIZE);
-    this.gameLoop = new GameLoop(world, painter);
-    this.keyHandler = new KeyHandler(this, world);
-  }
-
-  /* not mandatory to have a main */
+  /* the main allows it to start the application with Gradle, otherwise it's not mandatory for a JavaFX Application */
   public static void main(final String[] args) {
     launch();
   }
 
   static double scale(final int value) {
     return value * TILE_SIZE;
+  }
+
+  private final Canvas canvas;
+  private final Painter painter;
+  private GameLoop gameLoop;
+  private KeyHandler keyHandler;
+
+  public SnakeGame() {
+    this.canvas = new Canvas();
+    final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+    this.painter = new Painter(graphicsContext, TILE_SIZE);
+    this.gameLoop = new GameLoop(painter);
+    this.keyHandler = new KeyHandler(this);
+
+    createWorld();
+  }
+
+  private void createWorld() {
+    final World world = new World();
+    canvas.setWidth(scale(world.getWidth()));
+    canvas.setHeight(scale(world.getHeight()));
+    gameLoop.setWorld(world);
+    keyHandler.setWorld(world);
   }
 
   @Override
@@ -70,11 +79,7 @@ public class SnakeGame extends Application {
 
   void reset() {
     gameLoop.stop();
-
-    final World world = new World();
-    this.gameLoop = new GameLoop(world, painter);
-    this.keyHandler.setWorld(world);
-
+    createWorld();
     gameLoop.start();
   }
 }

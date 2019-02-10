@@ -4,7 +4,7 @@ class KeyHandler {
   private final SnakeGame snakeGame;
   private World world;
 
-  KeyHandler(final SnakeGame snakeGame, final World world) {
+  KeyHandler(final SnakeGame snakeGame) {
     this.snakeGame = snakeGame;
     this.world = world;
   }

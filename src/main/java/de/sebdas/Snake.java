@@ -3,10 +3,12 @@ package de.sebdas;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toCollection;
 
 class Snake {
+  private static final int INITIAL_LENGTH = 3;
 
   private final World world;
   private final Deque<Coordinate> segments;
@@ -15,12 +17,16 @@ class Snake {
 
   Snake(final World world) {
     this.world = world;
-    this.segments = new ArrayDeque<>(asList(
-        new Coordinate(1, 0),
-        new Coordinate(0, 0)
-    ));
+    this.segments = createInitialSegments();
     this.direction = Directions.right();
     this.collision = false;
+  }
+
+  private Deque<Coordinate> createInitialSegments() {
+    final Coordinate initialHead = new Coordinate(world.getWidth() / 2, world.getHeight() / 2);
+    return Stream.iterate(initialHead, prev -> new Coordinate(prev.getX() - 1, prev.getY()))
+                 .limit(INITIAL_LENGTH)
+                 .collect(toCollection(ArrayDeque::new));
   }
 
   Coordinate getHead() {
