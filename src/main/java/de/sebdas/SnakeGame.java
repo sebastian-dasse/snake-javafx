@@ -1,6 +1,7 @@
 package de.sebdas;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -60,11 +61,6 @@ public class SnakeGame extends Application {
     gameLoop.start();
   }
 
-  @Override
-  public void stop() {
-    gameLoop.stop();
-  }
-
   private Map<? extends KeyCombination, ? extends Runnable> defineAccelerators() {
     return Map.of(
         new KeyCodeCombination(KeyCode.LEFT), keyHandler::onLeft,
@@ -73,13 +69,24 @@ public class SnakeGame extends Application {
         new KeyCodeCombination(KeyCode.DOWN), keyHandler::onDown,
         new KeyCodeCombination(KeyCode.P), keyHandler::togglePause,
         new KeyCodeCombination(KeyCode.S), keyHandler::restart,
-        new KeyCodeCombination(KeyCode.X), keyHandler::cancel
+        new KeyCodeCombination(KeyCode.X), keyHandler::cancel,
+        new KeyCodeCombination(KeyCode.Y), keyHandler::yes,
+        new KeyCodeCombination(KeyCode.N), keyHandler::no
     );
+  }
+
+  @Override
+  public void stop() {
+    gameLoop.stop();
   }
 
   void reset() {
     gameLoop.stop();
     createWorld();
     gameLoop.start();
+  }
+
+  void exit() {
+    Platform.exit();
   }
 }

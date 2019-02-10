@@ -3,10 +3,28 @@ package de.sebdas;
 class KeyHandler {
   private final SnakeGame snakeGame;
   private World world;
+  private Decision decision;
+
+  private enum Decision {
+    YES      (true),
+    NO       (false),
+    UNDECIDED(false);
+
+    private final boolean isTrue;
+
+    Decision(final boolean isTrue) {
+      this.isTrue = isTrue;
+    }
+
+    boolean isTrue() {
+      return isTrue;
+    }
+  }
 
   KeyHandler(final SnakeGame snakeGame) {
     this.snakeGame = snakeGame;
-    this.world = world;
+    this.world = null;
+    this.decision = Decision.UNDECIDED;
   }
 
   void setWorld(final World world) {
@@ -34,10 +52,29 @@ class KeyHandler {
   }
 
   void restart() {
-    snakeGame.reset();
+    final boolean userHasConfirmedRestart = askForConfirmation();
+    if (userHasConfirmedRestart) {
+      snakeGame.reset();
+    }
   }
 
   void cancel() {
-    System.out.println("cancel (TODO)");
+    final boolean userHasConfirmedCancellation = askForConfirmation();
+    if (userHasConfirmedCancellation) {
+      snakeGame.exit();
+    }
+  }
+  void yes() {
+    decision = Decision.YES;
+  }
+
+  void no() {
+    decision = Decision.NO;
+  }
+
+  private boolean askForConfirmation() {
+    world.togglePause();
+    System.out.println("askForConfirmation (TODO)");
+    return true;
   }
 }
