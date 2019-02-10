@@ -2,31 +2,49 @@ package de.sebdas;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.Set;
 
 import static de.sebdas.SnakeGame.scale;
 
 class Painter {
+  private static final Color BACKGROUND_COLOR = Color.CORNSILK;
+  private static final Color WARNING_COLOR = Color.RED;
 
-  private World world;
-  private GraphicsContext gc;
+  private final GraphicsContext gc;
   private final double tileSize;
+  private World world;
+  private Paint warningColor;
 
-  Painter(final World world, final GraphicsContext gc, final double tileSize) {
-    this.world = world;
+  Painter(final GraphicsContext gc, final double tileSize) {
     this.gc = gc;
     this.tileSize = tileSize;
+    this.warningColor = WARNING_COLOR;
   }
 
-  void paint() {
+  void paint(final World world) {
+    this.world = world;
     clearCanvas();
     paintFood();
     paintSnake();
   }
 
+  void showWarning() {
+    gc.setStroke(warningColor);
+    gc.setLineWidth(5.0);
+    gc.strokeRect(0, 0, scale(world.getWidth()), scale(world.getHeight()));
+    toggleWarningColor();
+  }
+
+  private void toggleWarningColor() {
+    warningColor = warningColor.equals(WARNING_COLOR)
+                   ? BACKGROUND_COLOR
+                   : WARNING_COLOR;
+  }
+
   private void clearCanvas() {
-    gc.setFill(Color.CORNSILK);
+    gc.setFill(BACKGROUND_COLOR);
     gc.fillRect(0, 0, scale(world.getWidth()), scale(world.getHeight()));
   }
 
@@ -51,5 +69,4 @@ class Painter {
                   tileSize);
     }
   }
-
 }

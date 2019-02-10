@@ -7,12 +7,13 @@
 - [x] let the snake eat some food (without growing yet)
 - [x] random food placement
 - [x] let the snake grow
-- [ ] collision detection
-- [ ] pause, resume and exit the game
+- [x] collision detection
+- [x] pause and resume
 - [ ] increased snake speed over time
 
 ## Nice to have
 - [ ] improve random food distribution
+- [ ] exit the game gracefully
 - [ ] improve snake navigation to react faster
 - [ ] improve animation to be more smooth
 - [ ] user defined scaling and world size

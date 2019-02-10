@@ -1,16 +1,17 @@
 package de.sebdas;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 
 import static java.util.Arrays.asList;
 
 class Snake {
-  private static final double ANIMATION_TIME_SEC = 5.0;
 
   private final World world;
-  private Direction direction;
   private final Deque<Coordinate> segments;
+  private Direction direction;
+  private boolean collision;
 
   Snake(final World world) {
     this.world = world;
@@ -19,14 +20,19 @@ class Snake {
         new Coordinate(0, 0)
     ));
     this.direction = Directions.right();
+    this.collision = false;
   }
 
   Coordinate getHead() {
     return segments.getFirst();
   }
 
-  Deque<Coordinate> getSegments() {
+  Collection<Coordinate> getSegments() {
     return segments;
+  }
+
+  boolean noCollisionDetected() {
+    return !collision;
   }
 
   void move() {
@@ -39,7 +45,9 @@ class Snake {
   }
 
   private Coordinate nextHeadPosition() {
-    return world.move(segments.getFirst(), direction);
+    final Coordinate nextHeadPosition = world.move(segments.getFirst(), direction);
+    collision = segments.contains(nextHeadPosition);
+    return nextHeadPosition;
   }
 
   void turnLeft() {

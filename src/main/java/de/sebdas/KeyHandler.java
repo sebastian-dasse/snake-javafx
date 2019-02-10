@@ -1,9 +1,15 @@
 package de.sebdas;
 
 class KeyHandler {
-  private final World world;
+  private final SnakeGame snakeGame;
+  private World world;
 
-  KeyHandler(final World world) {
+  KeyHandler(final SnakeGame snakeGame, final World world) {
+    this.snakeGame = snakeGame;
+    this.world = world;
+  }
+
+  void setWorld(final World world) {
     this.world = world;
   }
 
@@ -23,8 +29,12 @@ class KeyHandler {
     world.onDown();
   }
 
-  void pause() {
-    System.out.println("pause (TODO)");
+  void togglePause() {
+    world.togglePause();
+  }
+
+  void restart() {
+    snakeGame.reset();
   }
 
   void cancel() {

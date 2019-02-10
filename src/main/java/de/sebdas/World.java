@@ -9,19 +9,21 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toCollection;
 
 class World implements Observable {
-  private static final int WIDTH_TILES  = 15;
+  private static final int WIDTH_TILES = 15;
   private static final int HEIGHT_TILES = 10;
 
   private final Snake snake;
   private final List<InvalidationListener> listeners;
   private final Random random;
   private Set<Coordinate> food;
+  private boolean paused;
 
   World() {
     this.snake = new Snake(this);
     this.listeners = new ArrayList<>();
     this.random = new Random(System.nanoTime());
     this.food = createFood();
+    this.paused = false;
   }
 
   @Override
@@ -55,6 +57,7 @@ class World implements Observable {
   }
 
   void pulse() {
+    if (paused) return;
     updateSnake();
     notifyListeners();
   }
@@ -105,5 +108,9 @@ class World implements Observable {
 
   private Coordinate createRandomCoordinate() {
     return new Coordinate(random.nextInt(getWidth()), random.nextInt(getHeight()));
+  }
+
+  void togglePause() {
+    paused = !paused;
   }
 }

@@ -1,47 +1,51 @@
 package de.sebdas;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import javafx.animation.AnimationTimer;
 
 class GameLoop {
+  private static final int UPDATE_INTERVAL_NANOS = 18_000_000 * 10;
+
   private final World world;
   private Painter painter;
-  private Timer timer;
+  private AnimationTimer animationTimer;
 
   GameLoop(final World world, final Painter painter) {
     this.world = world;
     this.painter = painter;
-    this.timer = new Timer();
+    this.animationTimer = createAnimationTimer();
+
+    world.addListener(observable -> painter.paint(world));
+  }
+
+  private AnimationTimer createAnimationTimer() {
+    return new AnimationTimer() {
+      private long lastUpdate;
+
+      @Override
+      public void handle(final long now) {
+        if (UPDATE_INTERVAL_NANOS <= now - lastUpdate) {
+          lastUpdate = now;
+          update();
+        }
+      }
+    };
+  }
+
+  private void update() {
+    if (world.getSnake().noCollisionDetected()) {
+      world.pulse();
+    } else {
+      painter.showWarning();
+    }
   }
 
   void start() {
-//    final long startNanoTime = System.nanoTime();
-
-    painter.paint();
-    world.addListener(observable -> painter.paint());
-    initTimer();
-
-    /*new AnimationTimer() {
-      @Override
-      public void handle(final long currentNanoTime) {
-//        final long timSinceStartMillis = (startNanoTime - currentNanoTime) / 1_000_000;
-        painter.paint();
-      }
-    }.start();*/
-  }
-
-  private void initTimer() {
-    timer.scheduleAtFixedRate(new TimerTask() {
-
-      @Override
-      public void run() {
-        world.pulse();
-      }
-    }, 0, 333);
+    painter.paint(world);
+    animationTimer.start();
   }
 
   void stop() {
-    timer.cancel();
+    animationTimer.stop();
   }
 
 }

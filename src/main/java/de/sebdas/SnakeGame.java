@@ -16,16 +16,17 @@ public class SnakeGame extends Application {
   private static final double TILE_SIZE = 50.0;
 
   private final Canvas canvas;
-  private final GameLoop gameLoop;
-  private final KeyHandler keyHandler;
+  private final Painter painter;
+  private GameLoop gameLoop;
+  private KeyHandler keyHandler;
 
   public SnakeGame() {
     final World world = new World();
     this.canvas = new Canvas(scale(world.getWidth()), scale(world.getHeight()));
     final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    final Painter painter = new Painter(world, graphicsContext, TILE_SIZE);
+    this.painter = new Painter(graphicsContext, TILE_SIZE);
     this.gameLoop = new GameLoop(world, painter);
-    this.keyHandler = new KeyHandler(world);
+    this.keyHandler = new KeyHandler(this, world);
   }
 
   /* not mandatory to have a main */
@@ -61,8 +62,19 @@ public class SnakeGame extends Application {
         new KeyCodeCombination(KeyCode.RIGHT), keyHandler::onRight,
         new KeyCodeCombination(KeyCode.UP), keyHandler::onUp,
         new KeyCodeCombination(KeyCode.DOWN), keyHandler::onDown,
-        new KeyCodeCombination(KeyCode.P), keyHandler::pause,
+        new KeyCodeCombination(KeyCode.P), keyHandler::togglePause,
+        new KeyCodeCombination(KeyCode.S), keyHandler::restart,
         new KeyCodeCombination(KeyCode.X), keyHandler::cancel
     );
+  }
+
+  void reset() {
+    gameLoop.stop();
+
+    final World world = new World();
+    this.gameLoop = new GameLoop(world, painter);
+    this.keyHandler.setWorld(world);
+
+    gameLoop.start();
   }
 }
