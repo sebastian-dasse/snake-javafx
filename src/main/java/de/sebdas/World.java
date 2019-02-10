@@ -51,29 +51,23 @@ class World implements Observable {
 
   void onLeft() {
     snake.moveLeft();
-    notifyListeners();
   }
 
   void onRight() {
     snake.moveRight();
-    notifyListeners();
   }
 
   void onUp() {
     snake.moveUp();
-    notifyListeners();
   }
 
   void onDown() {
     snake.moveDown();
-    notifyListeners();
   }
 
   Coordinate move(final Coordinate coordinate, final Direction direction) {
-    return new Coordinate(
-        flip(coordinate.getXIncremented(direction), getWidth()),
-        flip(coordinate.getYIncremented(direction), getHeight())
-    );
+    return new Coordinate(flip(coordinate.getX() + direction.getX(), getWidth()),
+                          flip(coordinate.getY() + direction.getY(), getHeight()));
   }
 
   private int flip(final int position, final int size) {

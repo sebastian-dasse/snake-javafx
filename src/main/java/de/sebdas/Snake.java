@@ -3,7 +3,6 @@ package de.sebdas;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.sebdas.Direction.*;
 import static java.util.Arrays.asList;
 
 class Snake {
@@ -17,7 +16,8 @@ class Snake {
   Snake(final World world) {
     this.world = world;
     this.headPosition = new Coordinate(0, 0);
-    this.direction = RIGHT;
+    this.direction = Directions.right();
+
     this.segments = new ArrayList<>(asList(
         new Coordinate(1, 0),
         new Coordinate(0, 0)
@@ -37,26 +37,18 @@ class Snake {
   }
 
   void moveLeft() {
-    if (direction == RIGHT) return;
-//    headPosition = world.move(headPosition, LEFT);
-    direction = LEFT;
+    direction = direction.turnLeft();
   }
 
   void moveRight() {
-    if (direction == LEFT) return;
-//    headPosition = world.move(headPosition, RIGHT);
-    direction = RIGHT;
+    direction = direction.turnRight();
   }
 
   void moveUp() {
-    if (direction == DOWN) return;
-//    headPosition = world.move(headPosition, UP);
-    direction = UP;
+    direction = direction.turnUp();
   }
 
   void moveDown() {
-    if (direction == UP) return;
-//    headPosition = world.move(headPosition, DOWN);
-    direction = DOWN;
+    direction = direction.turnDown();
   }
 }

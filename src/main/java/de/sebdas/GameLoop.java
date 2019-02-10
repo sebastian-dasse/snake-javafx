@@ -37,7 +37,7 @@ class GameLoop {
       public void run() {
         world.pulse();
       }
-    }, 0, 500);
+    }, 0, 333);
   }
 
   void stop() {
