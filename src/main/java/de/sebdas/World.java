@@ -3,8 +3,9 @@ package de.sebdas;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Arrays.asList;
 
 class World implements Observable {
   private static final int WIDTH_TILES  = 15;
@@ -12,10 +13,14 @@ class World implements Observable {
 
   private final Snake snake;
   private final List<InvalidationListener> listeners;
+  private final Random random;
+  private Set<Coordinate> food;
 
   World() {
     this.snake = new Snake(this);
     this.listeners = new ArrayList<>();
+    this.random = new Random(System.nanoTime());
+    this.food = createFood();
   }
 
   @Override
@@ -44,9 +49,24 @@ class World implements Observable {
     return snake;
   }
 
+  Set<Coordinate> getFood() {
+    return food;
+  }
+
   void pulse() {
     snake.pulse();
+    feedSnake();
     notifyListeners();
+  }
+
+  private void feedSnake() {
+    final boolean didSnakeEat = food.remove(snake.getHead());
+    if (didSnakeEat) {
+      System.out.println("yum!");
+      if (food.isEmpty()) {
+        food = createFood();
+      }
+    }
   }
 
   void onLeft() {
@@ -72,5 +92,17 @@ class World implements Observable {
 
   private int flip(final int position, final int size) {
     return (size + position) % size;
+  }
+
+  private Set<Coordinate> createFood() {
+
+    // TODO:
+    final int biteCount = random.nextInt(2) + 1;
+
+    return new HashSet<>(asList(createRandomCoordinate(), createRandomCoordinate()));
+  }
+
+  private Coordinate createRandomCoordinate() {
+    return new Coordinate(random.nextInt(getWidth()), random.nextInt(getHeight()));
   }
 }

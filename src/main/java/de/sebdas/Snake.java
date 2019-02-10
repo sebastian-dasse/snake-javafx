@@ -24,12 +24,8 @@ class Snake {
     ));
   }
 
-  int getHeadX() {
-    return headPosition.getX();
-  }
-
-  int getHeadY() {
-    return headPosition.getY();
+  Coordinate getHead() {
+    return headPosition;
   }
 
   void pulse() {
@@ -51,4 +47,5 @@ class Snake {
   void moveDown() {
     direction = direction.turnDown();
   }
+
 }
