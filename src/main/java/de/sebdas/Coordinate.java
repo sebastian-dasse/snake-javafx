@@ -6,6 +6,19 @@ final class Coordinate {
   private final int x;
   private final int y;
 
+  Coordinate(final int x, final int y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  int getX() {
+    return x;
+  }
+
+  int getY() {
+    return y;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
@@ -18,19 +31,6 @@ final class Coordinate {
   @Override
   public int hashCode() {
     return Objects.hash(x, y);
-  }
-
-  Coordinate(final int x, final int y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  int getX() {
-    return x;
-  }
-
-  int getY() {
-    return y;
   }
 
   @Override

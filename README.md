@@ -10,6 +10,7 @@
 - [x] collision detection
 - [x] pause and resume
 - [ ] increased snake speed over time
+- [ ] score
 
 ## Nice to have
 - [ ] improve random food distribution

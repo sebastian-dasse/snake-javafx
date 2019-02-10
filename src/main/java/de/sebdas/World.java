@@ -19,11 +19,15 @@ class World implements Observable {
   private boolean paused;
 
   World() {
-    this.snake = new Snake(this);
+    this.snake = new Snake(createInitialHead(), this::move);
     this.listeners = new ArrayList<>();
     this.random = new Random(System.nanoTime());
     this.food = createFood();
     this.paused = false;
+  }
+
+  private Coordinate createInitialHead() {
+    return new Coordinate(getWidth() / 2, getHeight() / 2);
   }
 
   @Override
@@ -90,7 +94,7 @@ class World implements Observable {
     snake.turnDown();
   }
 
-  Coordinate move(final Coordinate coordinate, final Direction direction) {
+  private Coordinate move(final Coordinate coordinate, final Direction direction) {
     return new Coordinate(flip(coordinate.getX() + direction.getX(), getWidth()),
                           flip(coordinate.getY() + direction.getY(), getHeight()));
   }

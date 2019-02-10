@@ -3,6 +3,7 @@ package de.sebdas;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toCollection;
@@ -10,20 +11,19 @@ import static java.util.stream.Collectors.toCollection;
 class Snake {
   private static final int INITIAL_LENGTH = 3;
 
-  private final World world;
   private final Deque<Coordinate> segments;
+  private final BiFunction<Coordinate, Direction, Coordinate> move;
   private Direction direction;
   private boolean collision;
 
-  Snake(final World world) {
-    this.world = world;
-    this.segments = createInitialSegments();
+  Snake(final Coordinate initialHead, final BiFunction<Coordinate, Direction, Coordinate> move) {
+    this.segments = createInitialSegments(initialHead);
+    this.move = move;
     this.direction = Directions.right();
     this.collision = false;
   }
 
-  private Deque<Coordinate> createInitialSegments() {
-    final Coordinate initialHead = new Coordinate(world.getWidth() / 2, world.getHeight() / 2);
+  private Deque<Coordinate> createInitialSegments(final Coordinate initialHead) {
     return Stream.iterate(initialHead, prev -> new Coordinate(prev.getX() - 1, prev.getY()))
                  .limit(INITIAL_LENGTH)
                  .collect(toCollection(ArrayDeque::new));
@@ -51,7 +51,7 @@ class Snake {
   }
 
   private Coordinate nextHeadPosition() {
-    final Coordinate nextHeadPosition = world.move(segments.getFirst(), direction);
+    final Coordinate nextHeadPosition = move.apply(segments.getFirst(), direction);
     collision = segments.contains(nextHeadPosition);
     return nextHeadPosition;
   }
