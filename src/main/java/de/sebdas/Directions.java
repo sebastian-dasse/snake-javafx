@@ -33,6 +33,11 @@ final class Directions {
     Direction turnRight() {
       return this;
     }
+
+    @Override
+    public String toString() {
+      return "LEFT";
+    }
   }
 
   private static class DirectionRight extends Direction {
@@ -43,6 +48,11 @@ final class Directions {
     @Override
     Direction turnLeft() {
       return this;
+    }
+
+    @Override
+    public String toString() {
+      return "RIGHT";
     }
   }
 
@@ -55,6 +65,11 @@ final class Directions {
     Direction turnDown() {
       return this;
     }
+
+    @Override
+    public String toString() {
+      return "UP";
+    }
   }
 
   private static class DirectionDown extends Direction {
@@ -65,6 +80,11 @@ final class Directions {
     @Override
     Direction turnUp() {
       return this;
+    }
+
+    @Override
+    public String toString() {
+      return "DOWN";
     }
   }
 }
