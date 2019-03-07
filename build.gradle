@@ -10,10 +10,32 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.11
 
+wrapper.gradleVersion = '5.1'
+
+ext {
+    junit5Version        = '5.4.0'
+    junitPlatformVersion = '1.4.0'
+    assertjVersion       = '3.12.1'
+    mockitoVersion       = '2.25.0'
+}
+
 repositories {
     mavenCentral()
 }
 
+dependencies {
+    testCompile "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
+    testCompile "org.junit.jupiter:junit-jupiter-params:${junit5Version}"
+    testCompile "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
+    testRuntime "org.junit.platform:junit-platform-runner:${junitPlatformVersion}"
+    testCompile "org.assertj:assertj-core:${assertjVersion}"
+    testCompile "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+}
+
 javafx {
     modules = [ 'javafx.controls' ]
+}
+
+test {
+    useJUnitPlatform()
 }
