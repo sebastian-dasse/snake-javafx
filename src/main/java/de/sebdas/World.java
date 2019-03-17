@@ -57,7 +57,7 @@ class World implements Observable {
   }
 
   Set<Coordinate> getFood() {
-    return food;
+    return Collections.unmodifiableSet(food);
   }
 
   void pulse() {
