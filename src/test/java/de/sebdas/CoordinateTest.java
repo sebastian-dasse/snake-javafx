@@ -9,17 +9,21 @@ import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+@DisplayName("Coordinate")
 class CoordinateTest {
 
   private static final int DONT_CARE = 0;
@@ -155,6 +159,53 @@ class CoordinateTest {
     final String actualString = coordinate.toString();
 
     assertThat(actualString).isEqualTo(expectedString);
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideArgumentsFor_translated")
+  @DisplayName("translated() should work as expected")
+  void test_translated(final Coordinate coordinate, final Direction direction, final Coordinate expectedCoordinate) {
+    final Coordinate translated = coordinate.translated(direction);
+
+    assertThat(translated).isEqualTo(expectedCoordinate);
+  }
+
+  private static Stream<Arguments> provideArgumentsFor_translated() {
+    return Stream.of(
+        Arguments.of(new Coordinate(0, 0), Directions.left() , new Coordinate(-1,  0)),
+        Arguments.of(new Coordinate(0, 0), Directions.right(), new Coordinate( 1,  0)),
+        Arguments.of(new Coordinate(0, 0), Directions.up()   , new Coordinate( 0, -1)),
+        Arguments.of(new Coordinate(0, 0), Directions.down() , new Coordinate( 0,  1)),
+
+        Arguments.of(new Coordinate(Integer.MIN_VALUE, 0), Directions.left() , new Coordinate(Integer.MAX_VALUE, 0)),
+        Arguments.of(new Coordinate(Integer.MAX_VALUE, 0), Directions.right(), new Coordinate(Integer.MIN_VALUE, 0)),
+        Arguments.of(new Coordinate(0, Integer.MIN_VALUE), Directions.up()   , new Coordinate(0, Integer.MAX_VALUE)),
+        Arguments.of(new Coordinate(0, Integer.MAX_VALUE), Directions.down() , new Coordinate(0, Integer.MIN_VALUE))
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideArgumentsFor_flipped")
+  @DisplayName("translated() should work as expected")
+  void test_flipped(final Coordinate coordinate, final int width, final int height, final Coordinate expectedCoordinate) {
+    final Coordinate flipped = coordinate.flipped(width, height);
+
+    assertThat(flipped).isEqualTo(expectedCoordinate);
+  }
+
+  private static Stream<Arguments> provideArgumentsFor_flipped() {
+    return Stream.of(
+        Arguments.of(new Coordinate(  0,  0), 10, 5, new Coordinate(0, 0)),
+        Arguments.of(new Coordinate(  9,  4), 10, 5, new Coordinate(9, 4)),
+
+        Arguments.of(new Coordinate( -1,  0), 10, 5, new Coordinate(9, 0)),
+        Arguments.of(new Coordinate(  0, -1), 10, 5, new Coordinate(0, 4)),
+        Arguments.of(new Coordinate( 10,  4), 10, 5, new Coordinate(0, 4)),
+        Arguments.of(new Coordinate(  9,  5), 10, 5, new Coordinate(9, 0)),
+
+        Arguments.of(new Coordinate( -1, -1), 10, 5, new Coordinate(9, 4)),
+        Arguments.of(new Coordinate( 10,  5), 10, 5, new Coordinate(0, 0))
+    );
   }
 
 

@@ -40,4 +40,18 @@ final class Coordinate {
            ", y=" + y +
            '}';
   }
+
+  Coordinate translated(final Direction direction) {
+    return new Coordinate(getX() + direction.getX(),
+                          getY() + direction.getY());
+  }
+
+  Coordinate flipped(final int width, final int height) {
+    return new Coordinate(flip(getX(), width),
+                          flip(getY(), height));
+  }
+
+  private int flip(final int position, final int size) {
+    return (size + position) % size;
+  }
 }

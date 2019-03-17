@@ -94,13 +94,9 @@ class World implements Observable {
     snake.turnDown();
   }
 
-  private Coordinate move(final Coordinate coordinate, final Direction direction) {
-    return new Coordinate(flip(coordinate.getX() + direction.getX(), getWidth()),
-                          flip(coordinate.getY() + direction.getY(), getHeight()));
-  }
-
-  private int flip(final int position, final int size) {
-    return (size + position) % size;
+  Coordinate move(final Coordinate coordinate, final Direction direction) {
+    return coordinate.translated(direction)
+                     .flipped(getWidth(), getHeight());
   }
 
   private Set<Coordinate> createFood() {
