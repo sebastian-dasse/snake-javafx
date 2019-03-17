@@ -13,18 +13,18 @@ class Snake {
 
   private final Deque<Coordinate> segments;
   private final BiFunction<Coordinate, Direction, Coordinate> move;
-  private Direction direction;
+  Direction direction;
   private boolean collision;
 
   Snake(final Coordinate initialHead, final BiFunction<Coordinate, Direction, Coordinate> move) {
-    this.segments = createInitialSegments(initialHead);
     this.move = move;
+    this.segments = createInitialSegments(initialHead);
     this.direction = Directions.right();
     this.collision = false;
   }
 
   private Deque<Coordinate> createInitialSegments(final Coordinate initialHead) {
-    return Stream.iterate(initialHead, prev -> new Coordinate(prev.getX() - 1, prev.getY()))
+    return Stream.iterate(initialHead, prev -> move.apply(prev, Directions.left()))
                  .limit(INITIAL_LENGTH)
                  .collect(toCollection(ArrayDeque::new));
   }
@@ -33,7 +33,7 @@ class Snake {
     return segments.getFirst();
   }
 
-  Collection<Coordinate> getSegments() {
+  Deque<Coordinate> getSegments() {
     return segments;
   }
 
