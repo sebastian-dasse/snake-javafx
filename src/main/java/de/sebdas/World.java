@@ -15,7 +15,7 @@ class World implements Observable {
   private Snake snake;
   private final List<InvalidationListener> listeners;
   private final Random random;
-  private Set<Coordinate> food;
+  private final Set<Coordinate> food;
   boolean paused;
 
   World() {
@@ -33,6 +33,11 @@ class World implements Observable {
   /** intended for testing only */
   void setSnake(final Snake snake) {
     this.snake = snake;
+  }
+
+  void setFood(final Set<Coordinate> food) {
+    this.food.clear();
+    this.food.addAll(food);
   }
 
   @Override
@@ -76,7 +81,7 @@ class World implements Observable {
     if (wasHeadInFood) {
       snake.grow();
       if (food.isEmpty()) {
-        food = createFood();
+        setFood(createFood());
       }
     } else {
       snake.move();

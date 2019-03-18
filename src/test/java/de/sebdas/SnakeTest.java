@@ -144,19 +144,19 @@ class SnakeTest {
   }
 
   @Nested
-  @DisplayName("turn (with initial direction left)")
+  @DisplayName("turn (with initial direction RIGHT)")
   class Testing_turn {
 
     @Test
-    @DisplayName("turnLeft() should work as expected")
+    @DisplayName("turnLeft() should not turn but keep direction RIGHT")
     void test_turnLeft() {
       snake.turnLeft();
 
-      assertThat(snake).hasDirection(Directions.right()); // prevents collision
+      assertThat(snake).hasDirection(Directions.right());
     }
 
     @Test
-    @DisplayName("turnRight() should work as expected")
+    @DisplayName("turnRight() should keep direction RIGHT")
     void test_turnRight() {
       snake.turnRight();
 
@@ -164,7 +164,7 @@ class SnakeTest {
     }
 
     @Test
-    @DisplayName("turnUp() should work as expected")
+    @DisplayName("turnUp() should turn UP")
     void test_turnUp() {
       snake.turnUp();
 
@@ -172,7 +172,7 @@ class SnakeTest {
     }
 
     @Test
-    @DisplayName("turnDown() should work as expected")
+    @DisplayName("turnDown() should turn DOWN")
     void test_turnDown() {
       snake.turnDown();
 
