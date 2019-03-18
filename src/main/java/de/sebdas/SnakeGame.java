@@ -26,15 +26,13 @@ public class SnakeGame extends Application {
   }
 
   private final Canvas canvas;
-  private final Painter painter;
   private GameLoop gameLoop;
   private KeyHandler keyHandler;
 
   public SnakeGame() {
     this.canvas = new Canvas();
     final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    this.painter = new Painter(graphicsContext, TILE_SIZE);
-    this.gameLoop = new GameLoop(painter);
+    this.gameLoop = new GameLoop(new Painter(graphicsContext, TILE_SIZE));
     this.keyHandler = new KeyHandler(this);
 
     createWorld();

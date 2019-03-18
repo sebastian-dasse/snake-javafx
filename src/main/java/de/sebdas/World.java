@@ -12,11 +12,11 @@ class World implements Observable {
   private static final int WIDTH_TILES = 15;
   private static final int HEIGHT_TILES = 10;
 
-  private final Snake snake;
+  private Snake snake;
   private final List<InvalidationListener> listeners;
   private final Random random;
   private Set<Coordinate> food;
-  private boolean paused;
+  boolean paused;
 
   World() {
     this.snake = new Snake(createInitialHead(), this::move);
@@ -28,6 +28,11 @@ class World implements Observable {
 
   private Coordinate createInitialHead() {
     return new Coordinate(getWidth() / 2, getHeight() / 2);
+  }
+
+  /** intended for testing only */
+  void setSnake(final Snake snake) {
+    this.snake = snake;
   }
 
   @Override

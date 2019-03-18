@@ -1,70 +1,209 @@
 package de.sebdas;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import javafx.beans.InvalidationListener;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
+import static de.sebdas.SnakeAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.*;
 
 @DisplayName("World")
+@ExtendWith(MockitoExtension.class)
 class WorldTest {
 
+  private World world;
+
+  @BeforeEach
+  void setup() {
+    world = new World();
+  }
+
   @Test
+  @DisplayName("addListener() should work as expected")
+  void test_addListener(@Mock final InvalidationListener listenerMock) {
+    world.addListener(listenerMock);
+
+    world.pulse();
+
+    verify(listenerMock).invalidated(any(World.class));
+  }
+
+  @Test
+  @DisplayName("removeListener() should work as expected")
+  void test_removeListener(@Mock final InvalidationListener listenerMock) {
+    world.addListener(listenerMock);
+    world.removeListener(listenerMock);
+
+    world.pulse();
+
+    verify(listenerMock, never()).invalidated(any(World.class));
+  }
+
+  @Test
+  @DisplayName("getWidth() should return the expected width")
   void test_getWidth() {
-    fail("TODO");
+    final int width = world.getWidth();
+
+    assertThat(width).isEqualTo(15);
   }
 
   @Test
+  @DisplayName("getHeight() should return the expected height")
   void test_getHeight() {
-    fail("TODO");
+    final int height = world.getHeight();
+
+    assertThat(height).isEqualTo(10);
   }
 
   @Test
+  @DisplayName("getSnake() should return the expected snake")
   void test_getSnake() {
-    fail("TODO");
+    final Snake snake = world.getSnake();
+
+    assertThat(snake)
+        .hasHead(new Coordinate(7, 5))
+        .hasSegments(new Coordinate(7, 5),
+                     new Coordinate(6, 5),
+                     new Coordinate(5, 5))
+        .hasDirection(Directions.right())
+        .hasNoCollision();
   }
 
-  @Test
+  @RepeatedTest(5)
+  @DisplayName("getFood() should return legal coordinates")
   void test_getFood() {
-    fail("TODO");
+    final Set<Coordinate> food = world.getFood();
+
+    assertThat(food).isNotEmpty()
+               .hasSizeLessThan(3)
+               .allMatch(this::isInWorldBounds);
   }
 
-  @Test
-  void test_pulse() {
-    fail("TODO");
+  private boolean isInWorldBounds(final Coordinate coordinate) {
+    final int x = coordinate.getX();
+    final int y = coordinate.getY();
+    return 0 <= x && x < world.getWidth() &&
+           0 <= y && y < world.getHeight();
   }
 
-  @Test
-  void test_onLeft() {
-    fail("TODO");
+  @Nested
+  @DisplayName("pulse()")
+  class Testing_pulse {
+
+    @Test
+    @DisplayName("should notify listeners and move the snake by one")
+    void test_pulse(@Mock final InvalidationListener listenerMock) {
+      world.addListener(listenerMock);
+
+      world.pulse();
+
+      assertThat(world.getSnake())
+          .hasHead(new Coordinate(8, 5))
+          .hasDirection(Directions.right())
+          .hasNoCollision();
+      verify(listenerMock).invalidated(any(World.class));
+    }
+
+    @Test
+    @DisplayName("should notify listeners twice and move the snake by two")
+    void test_pulse_twice(@Mock final InvalidationListener listenerMock) {
+      world.addListener(listenerMock);
+
+      world.pulse();
+      world.pulse();
+
+      assertThat(world.getSnake())
+          .hasHead(new Coordinate(9, 5))
+          .hasDirection(Directions.right())
+          .hasNoCollision();
+      verify(listenerMock, times(2)).invalidated(any(World.class));
+    }
+
+    @Test
+    @DisplayName("should not notify listeners and not move the snake when paused")
+    void test_pulse_when_paused(@Mock final InvalidationListener listenerMock) {
+      world.addListener(listenerMock);
+      world.togglePause();
+
+      world.pulse();
+
+      assertThat(world.getSnake())
+          .hasHead(new Coordinate(7, 5))
+          .hasDirection(Directions.right())
+          .hasNoCollision();
+      verify(listenerMock, never()).invalidated(any(World.class));
+    }
+
+    @Test
+    void test_pulse_grows_when_head_in_food() {
+      fail("TODO: we need to be able to inject food or the food creation mechanism");
+    }
+
+    @Test
+    void test_pulse_does_not_grow_when_head_not_in_food() {
+      fail("TODO");
+    }
   }
 
-  @Test
-  void test_onRight() {
-    fail("TODO");
-  }
+  @Nested
+  @DisplayName("change of direction")
+  class Testing_turn {
 
-  @Test
-  void test_onUp() {
-    fail("TODO");
-  }
+    @Mock
+    private Snake snakeMock;
 
-  @Test
-  void test_onDown() {
-    fail("TODO");
+    @BeforeEach
+    void setup() {
+      world.setSnake(snakeMock);
+    }
+
+    @Test
+    @DisplayName("onLeft() should work as expected")
+    void test_onLeft() {
+      world.onLeft();
+
+      verify(snakeMock).turnLeft();
+    }
+
+    @Test
+    @DisplayName("onRight() should work as expected")
+    void test_onRight() {
+      world.onRight();
+
+      verify(snakeMock).turnRight();
+    }
+
+    @Test
+    @DisplayName("onUp() should work as expected")
+    void test_onUp() {
+      world.onUp();
+
+      verify(snakeMock).turnUp();
+    }
+
+    @Test
+    @DisplayName("onDown() should work as expected")
+    void test_onDown() {
+      world.onDown();
+
+      verify(snakeMock).turnDown();
+    }
   }
 
   @ParameterizedTest
   @MethodSource("provideArgumentsFor_world_move")
   @DisplayName("move() should work as expected")
   void test_move(final Coordinate coordinate, final Direction direction, final Coordinate expectedCoordinate) {
-    final World world = new World();
-
     final Coordinate moved = world.move(coordinate, direction);
 
     assertThat(moved).isEqualTo(expectedCoordinate);
@@ -84,8 +223,52 @@ class WorldTest {
     );
   }
 
-  @Test
-  void test_togglePause() {
-    fail("TODO");
+  @Nested
+  @DisplayName("pause")
+  class Testing_pause {
+
+    @Test
+    @DisplayName("should initially not be paused")
+    void test_initially_not_pause() {
+      assertThat(world.paused).isFalse();
+    }
+
+    @Test
+    @DisplayName("togglePause() should pause the world when called once")
+    void test_togglePause() {
+      world.togglePause();
+
+      assertThat(world.paused).isTrue();
+    }
+
+    @Test
+    @DisplayName("togglePause() should pause the world when called three times")
+    void test_togglePause_thrice() {
+      world.togglePause();
+      world.togglePause();
+      world.togglePause();
+
+      assertThat(world.paused).isTrue();
+    }
+
+    @Test
+    @DisplayName("togglePause() should result in a running world when called twice")
+    void test_togglePause_twice() {
+      world.togglePause();
+      world.togglePause();
+
+      assertThat(world.paused).isFalse();
+    }
+
+    @Test
+    @DisplayName("togglePause() should result in a running world when called four times")
+    void test_togglePause_four_times() {
+      world.togglePause();
+      world.togglePause();
+      world.togglePause();
+      world.togglePause();
+
+      assertThat(world.paused).isFalse();
+    }
   }
 }
