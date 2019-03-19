@@ -135,11 +135,17 @@ class WorldTest {
     @DisplayName("the listeners")
     class Testing_listeners {
 
+      @Mock
+      private InvalidationListener listenerMock;
+
+      @BeforeEach
+      void setup() {
+        world.addListener(listenerMock);
+      }
+
       @Test
       @DisplayName("should be notified when called once")
-      void test_pulse_notifies(@Mock final InvalidationListener listenerMock) {
-        world.addListener(listenerMock);
-
+      void test_pulse_notifies() {
         world.pulse();
 
         verify(listenerMock).invalidated(any(World.class));
@@ -147,9 +153,7 @@ class WorldTest {
 
       @Test
       @DisplayName("should be notified twice when called twice")
-      void test_pulse_twice_notifies_twice(@Mock final InvalidationListener listenerMock) {
-        world.addListener(listenerMock);
-
+      void test_pulse_twice_notifies_twice() {
         world.pulse();
         world.pulse();
 
@@ -158,8 +162,7 @@ class WorldTest {
 
       @Test
       @DisplayName("should not be notified when paused")
-      void test_pulse_does_not_notify_when_paused(@Mock final InvalidationListener listenerMock) {
-        world.addListener(listenerMock);
+      void test_pulse_does_not_notify_when_paused() {
         world.togglePause();
 
         world.pulse();
@@ -172,10 +175,17 @@ class WorldTest {
     @DisplayName("the snake")
     class Testing_snake {
 
+      @Mock
+      private Snake snakeMock;
+
+      @BeforeEach
+      void setup() {
+        world.setSnake(snakeMock);
+      }
+
       @Test
       @DisplayName("should not move nor grow when paused")
-      void test_pulse_does_not_move_nor_grow_when_paused(@Mock final Snake snakeMock) {
-        world.setSnake(snakeMock);
+      void test_pulse_does_not_move_nor_grow_when_paused() {
         world.togglePause();
 
         world.pulse();
@@ -186,8 +196,7 @@ class WorldTest {
 
       @Test
       @DisplayName("should not touch food when paused")
-      void test_pulse_does_not_eat_when_paused(@Mock final Snake snakeMock) {
-        world.setSnake(snakeMock);
+      void test_pulse_does_not_eat_when_paused() {
         final Set<Coordinate> food = Set.of(new Coordinate(1, 2), new Coordinate(3, 4));
         world.setFood(food);
         world.togglePause();
@@ -199,10 +208,9 @@ class WorldTest {
 
       @Test
       @DisplayName("should grow when head was in food")
-      void test_pulse_grows_when_head_in_food(@Mock final Snake snakeMock) {
+      void test_pulse_grows_when_head_in_food() {
         final Coordinate headPosition = new Coordinate(1, 2);
         when(snakeMock.getHead()).thenReturn(headPosition);
-        world.setSnake(snakeMock);
         world.setFood(Set.of(headPosition, new Coordinate(3, 4)));
 
         world.pulse();
@@ -213,11 +221,10 @@ class WorldTest {
 
       @Test
       @DisplayName("should touch food when head was in food")
-      void test_pulse_eats_when_head_in_food(@Mock final Snake snakeMock) {
+      void test_pulse_eats_when_head_in_food() {
         final Coordinate headPosition = new Coordinate(1, 2);
         final Coordinate notToBeEaten = new Coordinate(3, 4);
         when(snakeMock.getHead()).thenReturn(headPosition);
-        world.setSnake(snakeMock);
         world.setFood(Set.of(headPosition, notToBeEaten));
 
         world.pulse();
@@ -227,10 +234,9 @@ class WorldTest {
 
       @Test
       @DisplayName("should have fresh food created when head was in the last piece of food")
-      void test_pulse_creates_food_when_head_in_last_food(@Mock final Snake snakeMock) {
+      void test_pulse_creates_food_when_head_in_last_food() {
         final Coordinate headPosition = new Coordinate(1, 2);
         when(snakeMock.getHead()).thenReturn(headPosition);
-        world.setSnake(snakeMock);
         world.setFood(Set.of(headPosition));
 
         world.pulse();
@@ -243,9 +249,8 @@ class WorldTest {
 
       @Test
       @DisplayName("should move when head was not in food")
-      void test_pulse_moves_when_head_not_in_food(@Mock final Snake snakeMock) {
+      void test_pulse_moves_when_head_not_in_food() {
         when(snakeMock.getHead()).thenReturn(new Coordinate(0, 0));
-        world.setSnake(snakeMock);
         world.setFood(Set.of(new Coordinate(1, 2), new Coordinate(3, 4)));
 
         world.pulse();
@@ -256,9 +261,8 @@ class WorldTest {
 
       @Test
       @DisplayName("should leave food untouched when head was not in food")
-      void test_pulse_does_not_eat_when_head_not_in_food(@Mock final Snake snakeMock) {
+      void test_pulse_does_not_eat_when_head_not_in_food() {
         when(snakeMock.getHead()).thenReturn(new Coordinate(0, 0));
-        world.setSnake(snakeMock);
         final Set<Coordinate> food = Set.of(new Coordinate(1, 2), new Coordinate(3, 4));
         world.setFood(food);
 
