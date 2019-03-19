@@ -32,7 +32,7 @@ public class SnakeGame extends Application {
   public SnakeGame() {
     this.canvas = new Canvas();
     final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    this.gameLoop = new GameLoop(new Painter(graphicsContext, TILE_SIZE));
+    this.gameLoop = new GameLoop(new Painter(graphicsContext, TILE_SIZE), GameLoop::createAnimationTimer);
     this.keyHandler = new KeyHandler(this);
 
     createWorld();

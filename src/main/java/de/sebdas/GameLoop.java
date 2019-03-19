@@ -2,16 +2,18 @@ package de.sebdas;
 
 import javafx.animation.AnimationTimer;
 
+import java.util.function.Function;
+
 class GameLoop {
-  private static final int UPDATE_INTERVAL_NANOS = 18_000_000 * 10;
+  static final long UPDATE_INTERVAL_NANOS = 18_000_000 * 10;
 
   private final Painter painter;
   private final AnimationTimer animationTimer;
   private World world;
 
-  GameLoop(final Painter painter) {
+  GameLoop(final Painter painter, final Function<GameLoop, AnimationTimer> animationTimerCreator) {
     this.painter = painter;
-    this.animationTimer = createAnimationTimer();
+    this.animationTimer = animationTimerCreator.apply(this);
   }
 
   void setWorld(final World world) {
@@ -19,7 +21,7 @@ class GameLoop {
     world.addListener(observable -> painter.paint(world));
   }
 
-  private AnimationTimer createAnimationTimer() {
+  AnimationTimer createAnimationTimer() {
     return new AnimationTimer() {
       private long lastUpdate;
 
@@ -33,7 +35,7 @@ class GameLoop {
     };
   }
 
-  private void update() {
+  void update() {
     if (world.noCollisionDetected()) {
       world.pulse();
     } else {
