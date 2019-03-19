@@ -12,10 +12,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class KeyHandlerTest {
 
-  @Mock
-  private World worldMock;
-  @Mock
-  private SnakeGame snakeGameMock;
+  @Mock private World worldMock;
+  @Mock private SnakeGame snakeGameMock;
   private KeyHandler keyHandler;
 
   @BeforeEach

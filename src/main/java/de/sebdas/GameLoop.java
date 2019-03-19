@@ -34,7 +34,7 @@ class GameLoop {
   }
 
   private void update() {
-    if (world.getSnake().noCollisionDetected()) {
+    if (world.noCollisionDetected()) {
       world.pulse();
     } else {
       painter.showWarning();

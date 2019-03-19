@@ -127,6 +127,19 @@ class WorldTest {
     }
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"true", "false"})
+  @DisplayName("noCollisionDetected() should return the respective value of the snake")
+  void test_noCollisionDetected(final boolean expectedValue) {
+    final Snake snakeMock = mock(Snake.class);
+    when(snakeMock.noCollisionDetected()).thenReturn(expectedValue);
+    world.setSnake(snakeMock);
+
+    final boolean actualValue = world.noCollisionDetected();
+
+    assertThat(actualValue).isEqualTo(expectedValue);
+  }
+
   @Nested
   @DisplayName("pulse()")
   class Testing_pulse {
@@ -135,8 +148,7 @@ class WorldTest {
     @DisplayName("the listeners")
     class Testing_listeners {
 
-      @Mock
-      private InvalidationListener listenerMock;
+      @Mock private InvalidationListener listenerMock;
 
       @BeforeEach
       void setup() {
@@ -175,8 +187,7 @@ class WorldTest {
     @DisplayName("the snake")
     class Testing_snake {
 
-      @Mock
-      private Snake snakeMock;
+      @Mock private Snake snakeMock;
 
       @BeforeEach
       void setup() {
@@ -277,8 +288,7 @@ class WorldTest {
   @DisplayName("change of direction")
   class Testing_turn {
 
-    @Mock
-    private Snake snakeMock;
+    @Mock private Snake snakeMock;
 
     @BeforeEach
     void setup() {

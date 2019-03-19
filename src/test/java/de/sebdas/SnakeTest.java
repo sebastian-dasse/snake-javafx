@@ -179,4 +179,47 @@ class SnakeTest {
       assertThat(snake).hasDirection(Directions.down());
     }
   }
+
+  @Nested
+  @DisplayName("noCollisionDetected()")
+  class Testing_noCollisionDetected {
+
+    @Test
+    @DisplayName("should return true when head has grown into an empty spot")
+    void test_noCollisionDetected_when_grown() {
+      snake.grow();
+      snake.turnDown();
+      snake.grow();
+
+      assertThat(snake.noCollisionDetected()).isTrue();
+    }
+
+    @Test
+    @DisplayName("should return true when head has moved into an empty spot")
+    void test_noCollisionDetected_when_moved() {
+      snake.move();
+      snake.move();
+
+      assertThat(snake.noCollisionDetected()).isTrue();
+    }
+
+    @Test
+    @DisplayName("should return false when head has grown into a segment")
+    void test_noCollisionDetected_when_grown_into_segment() {
+      snake.grow();
+      snake.grow();
+
+      assertThat(snake.noCollisionDetected()).isFalse();
+    }
+
+    @Test
+    @DisplayName("should return false when head has moved into a segment")
+    void test_noCollisionDetected_when_moved_into_segment() {
+      snake.turnDown();
+      snake.move();
+      snake.move();
+
+      assertThat(snake.noCollisionDetected()).isFalse();
+    }
+  }
 }

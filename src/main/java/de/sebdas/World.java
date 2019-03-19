@@ -70,6 +70,10 @@ class World implements Observable {
     return Collections.unmodifiableSet(food);
   }
 
+  boolean noCollisionDetected() {
+    return snake.noCollisionDetected();
+  }
+
   void pulse() {
     if (paused) return;
     updateSnake();
