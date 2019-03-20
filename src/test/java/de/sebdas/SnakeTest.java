@@ -66,7 +66,7 @@ class SnakeTest {
       snake.move();
 
       assertThat(snake)
-          .hasHead(new Coordinate(2, 1))
+          .hasHeadAt(new Coordinate(2, 1))
           .hasSegments(new Coordinate(2, 1),
                        new Coordinate(1, 1),
                        new Coordinate(0, 1))
@@ -81,7 +81,7 @@ class SnakeTest {
       snake.move();
 
       assertThat(snake)
-          .hasHead(new Coordinate(3, 1))
+          .hasHeadAt(new Coordinate(3, 1))
           .hasSegments(new Coordinate(3, 1),
                        new Coordinate(2, 1),
                        new Coordinate(1, 1))
@@ -97,7 +97,7 @@ class SnakeTest {
       snake.move();
 
       assertThat(snake)
-          .hasHead(new Coordinate(0, 1))
+          .hasHeadAt(new Coordinate(0, 1))
           .hasSegments(new Coordinate(0, 1),
                        new Coordinate(3, 1),
                        new Coordinate(2, 1))
@@ -116,7 +116,7 @@ class SnakeTest {
       snake.grow();
 
       assertThat(snake)
-          .hasHead(new Coordinate(2, 1))
+          .hasHeadAt(new Coordinate(2, 1))
           .hasSegments(new Coordinate(2, 1),
                        new Coordinate(1, 1),
                        new Coordinate(0, 1),
@@ -132,7 +132,7 @@ class SnakeTest {
       snake.grow();
 
       assertThat(snake)
-          .hasHead(new Coordinate(3, 1))
+          .hasHeadAt(new Coordinate(3, 1))
           .hasSegments(new Coordinate(3, 1),
                        new Coordinate(2, 1),
                        new Coordinate(1, 1),

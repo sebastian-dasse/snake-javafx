@@ -26,6 +26,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class WorldTest {
 
+  private static final Coordinate INITIAL_SNAKE_HEAD = new Coordinate(7, 5);
+  private static final Coordinate[] INITIAL_SNAKE_SEGMENTS = {new Coordinate(7, 5),
+                                                              new Coordinate(6, 5),
+                                                              new Coordinate(5, 5)};
+  private final Direction INITIAL_SNAKE_DIRECTION = Directions.right();
   private static final int MAX_FOOD = 2;
 
   private World world;
@@ -33,6 +38,109 @@ class WorldTest {
   @BeforeEach
   void setup() {
     world = new World();
+  }
+
+  @Nested
+  @DisplayName("constructor")
+  class Testing_constructor {
+
+    @Test
+    @DisplayName("should initialize the snake as expected")
+    void test_constructor_snake() {
+      assertThat(world.getSnake())
+          .hasHeadAt(INITIAL_SNAKE_HEAD)
+          .hasSegments(INITIAL_SNAKE_SEGMENTS)
+          .hasDirection(INITIAL_SNAKE_DIRECTION)
+          .hasNoCollision();
+    }
+
+    @Test
+    @DisplayName("should initialize the food as expected")
+    void test_constructor_food() {
+      //noinspection Convert2MethodRef
+      assertThat(world.getFood())
+          .isNotEmpty()
+          .hasSizeLessThanOrEqualTo(MAX_FOOD)
+          .allMatch(coordinate -> isInWorldBounds(coordinate));
+    }
+
+    @Test
+    @DisplayName("should initialize the world as running (not paused)")
+    void test_constructor_not_paused() {
+      assertThat(world.isPaused()).isFalse();
+    }
+  }
+
+  private boolean isInWorldBounds(final Coordinate coordinate) {
+    final int x = coordinate.getX();
+    final int y = coordinate.getY();
+    return 0 <= x && x < world.getWidth() &&
+           0 <= y && y < world.getHeight();
+  }
+
+  @Nested
+  @DisplayName("reset()")
+  class Testing_reset {
+
+    @BeforeEach
+    void setup() {
+      final Set<Coordinate> initialFood = Set.of(INITIAL_SNAKE_HEAD);
+      world.setFood(initialFood);
+
+      world.pulse();
+      world.pulse();
+      world.onDown();
+      world.pulse();
+      world.onLeft();
+      world.pulse();
+      world.onUp();
+      world.pulse();
+      world.togglePause();
+
+      assertThat(world.getSnake())
+          .hasHeadAt(new Coordinate(8, 5))
+          .hasSegments(new Coordinate(8, 5),
+                       new Coordinate(8, 6),
+                       new Coordinate(9, 6),
+                       new Coordinate(9, 5)
+          )
+          .hasDirection(Directions.up())
+          .hasCollision();
+      assertThat(world.getFood()).isNotEqualTo(initialFood); // be aware that there is a slight chance of collision here
+      assertThat(world.isPaused()).isTrue();
+    }
+
+    @Test
+    @DisplayName("should reset the snake")
+    void test_reset_snake() {
+      world.reset();
+
+      assertThat(world.getSnake())
+          .hasHeadAt(INITIAL_SNAKE_HEAD)
+          .hasSegments(INITIAL_SNAKE_SEGMENTS)
+          .hasDirection(INITIAL_SNAKE_DIRECTION)
+          .hasNoCollision();
+    }
+
+    @Test
+    @DisplayName("should reset the food")
+    void test_reset_food() {
+      world.reset();
+
+      //noinspection Convert2MethodRef
+      assertThat(world.getFood())
+          .isNotEmpty()
+          .hasSizeLessThanOrEqualTo(MAX_FOOD)
+          .allMatch(coordinate -> isInWorldBounds(coordinate));
+    }
+
+    @Test
+    @DisplayName("should reset the paused state (to not paused)")
+    void test_reset_paused() {
+      world.reset();
+
+      assertThat(world.isPaused()).isFalse();
+    }
   }
 
   @Nested
@@ -81,35 +189,15 @@ class WorldTest {
       assertThat(height).isEqualTo(10);
     }
 
-    @Test
-    @DisplayName("getSnake() should return the expected snake")
-    void test_getSnake() {
-      final Snake snake = world.getSnake();
-
-      assertThat(snake)
-          .hasHead(new Coordinate(7, 5))
-          .hasSegments(new Coordinate(7, 5),
-                       new Coordinate(6, 5),
-                       new Coordinate(5, 5))
-          .hasDirection(Directions.right())
-          .hasNoCollision();
-    }
-
     @RepeatedTest(5)
     @DisplayName("getFood() should return legal coordinates")
     void test_getFood() {
       final Set<Coordinate> food = world.getFood();
 
+      //noinspection Convert2MethodRef
       assertThat(food).isNotEmpty()
                       .hasSizeLessThanOrEqualTo(MAX_FOOD)
-                      .allMatch(this::isInWorldBounds);
-    }
-
-    private boolean isInWorldBounds(final Coordinate coordinate) {
-      final int x = coordinate.getX();
-      final int y = coordinate.getY();
-      return 0 <= x && x < world.getWidth() &&
-             0 <= y && y < world.getHeight();
+                      .allMatch(coordinate -> isInWorldBounds(coordinate));
     }
 
     @ParameterizedTest
@@ -352,51 +440,45 @@ class WorldTest {
   }
 
   @Nested
-  @DisplayName("pause")
-  class Testing_pause {
+  @DisplayName("togglePause()")
+  class Testing_togglePause {
 
     @Test
-    @DisplayName("should initially not be paused")
-    void test_initially_not_pause() {
-      assertThat(world.paused).isFalse();
-    }
-
-    @Test
-    @DisplayName("togglePause() should pause the world when called once")
-    void test_togglePause() {
+    @DisplayName("should pause the world when called once")
+    void test_togglePause_once() {
       world.togglePause();
 
-      assertThat(world.paused).isTrue();
+      assertThat(world.isPaused()).isTrue();
     }
 
     @Test
-    @DisplayName("togglePause() should pause the world when called three times")
+    @DisplayName("should pause the world when called three times")
     void test_togglePause_thrice() {
       world.togglePause();
       world.togglePause();
       world.togglePause();
 
-      assertThat(world.paused).isTrue();
+      assertThat(world.isPaused()).isTrue();
     }
 
     @Test
-    @DisplayName("togglePause() should result in a running world when called twice")
+    @DisplayName("should result in a running world when called twice")
     void test_togglePause_twice() {
       world.togglePause();
       world.togglePause();
 
-      assertThat(world.paused).isFalse();
+      assertThat(world.isPaused()).isFalse();
     }
 
     @Test
-    @DisplayName("togglePause() should result in a running world when called four times")
+    @DisplayName("should result in a running world when called four times")
     void test_togglePause_four_times() {
       world.togglePause();
       world.togglePause();
       world.togglePause();
       world.togglePause();
 
-      assertThat(world.paused).isFalse();
+      assertThat(world.isPaused()).isFalse();
     }
   }
 

@@ -9,10 +9,7 @@ import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -86,6 +83,18 @@ class CoordinateTest {
         softly.assertThat(coordinate     .equals(equalCoordinate)).isTrue();
         softly.assertThat(equalCoordinate.equals(coordinate     )).isTrue();
       });
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @CsvSource("'not a coordinate'")
+    @DisplayName("equals() should return false for non-coordinates")
+    void test_equals_non_coordinates(final Object unequalObject) {
+      final Coordinate coordinate = new Coordinate(123, 456);
+
+      final boolean isEqual = coordinate.equals(unequalObject);
+
+      assertThat(isEqual).isFalse();
     }
 
     @ParameterizedTest
@@ -186,7 +195,7 @@ class CoordinateTest {
 
   @ParameterizedTest
   @MethodSource("provideArgumentsFor_flipped")
-  @DisplayName("translated() should work as expected")
+  @DisplayName("flipped() should work as expected")
   void test_flipped(final Coordinate coordinate, final int width, final int height, final Coordinate expectedCoordinate) {
     final Coordinate flipped = coordinate.flipped(width, height);
 

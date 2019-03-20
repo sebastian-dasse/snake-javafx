@@ -3,6 +3,7 @@ package de.sebdas;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 class SnakeAssert extends AbstractAssert<SnakeAssert, Snake> {
@@ -18,12 +19,12 @@ class SnakeAssert extends AbstractAssert<SnakeAssert, Snake> {
   SnakeAssert hasSegments(final Coordinate... segments) {
     isNotNull();
     Assertions.assertThat(actual.getSegments())
-              .withFailMessage("Expected snake's segments to be <%s> but was <%s>", segments, actual.getSegments())
+              .withFailMessage("Expected snake's segments to be <%s> but was <%s>", Arrays.toString(segments), actual.getSegments())
               .containsExactly(segments);
     return this;
   }
 
-  SnakeAssert hasHead(final Coordinate head) {
+  SnakeAssert hasHeadAt(final Coordinate head) {
     isNotNull();
     Assertions.assertThat(actual.getHead())
               .withFailMessage("Expected snake's direction to be <%s> but was <%s>", head, actual.getHead())

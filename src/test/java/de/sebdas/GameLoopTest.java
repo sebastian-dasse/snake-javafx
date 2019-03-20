@@ -34,7 +34,7 @@ class GameLoopTest {
 
   @Test
   @DisplayName("constructor should add listener")
-  void test_setWorld(@Mock final World worldMock) {
+  void test_constructor(@Mock final World worldMock) {
     new GameLoop(worldMock, painterMock, gl -> animationTimerMock);
 
     verify(worldMock).addListener(any(InvalidationListener.class));

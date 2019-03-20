@@ -16,7 +16,7 @@ class World implements Observable {
   private final Random random;
   private final Set<Coordinate> food;
   private Snake snake;
-  boolean paused;
+  private boolean paused;
 
   World() {
     this.listeners = new ArrayList<>();
@@ -73,6 +73,10 @@ class World implements Observable {
 
   Set<Coordinate> getFood() {
     return Collections.unmodifiableSet(food);
+  }
+
+  boolean isPaused() {
+    return paused;
   }
 
   boolean noCollisionDetected() {
