@@ -29,15 +29,13 @@ class GameLoopTest {
 
   @BeforeEach
   void setup() {
-    gameLoop = new GameLoop(painterMock, gl -> animationTimerMock);
-    gameLoop.setWorld(worldMock);
+    gameLoop = new GameLoop(worldMock, painterMock, gl -> animationTimerMock);
   }
 
   @Test
-  @DisplayName("setWorld() should add listener")
+  @DisplayName("constructor should add listener")
   void test_setWorld(@Mock final World worldMock) {
-    final GameLoop theGameLoop = new GameLoop(painterMock, gl -> animationTimerMock);
-    theGameLoop.setWorld(worldMock);
+    new GameLoop(worldMock, painterMock, gl -> animationTimerMock);
 
     verify(worldMock).addListener(any(InvalidationListener.class));
   }
@@ -155,11 +153,11 @@ class GameLoopTest {
   class Testing_start_and_stop {
 
     @Test
-    @DisplayName("start() should paint the world")
+    @DisplayName("start() should paint")
     void test_start_paints_world() {
       gameLoop.start();
 
-      verify(painterMock).paint(worldMock);
+      verify(painterMock).paint();
     }
 
     @Test

@@ -14,17 +14,17 @@ class Painter {
 
   private final GraphicsContext gc;
   private final double tileSize;
-  private World world;
+  private final World world;
   private Paint warningColor;
 
-  Painter(final GraphicsContext gc, final double tileSize) {
+  Painter(final GraphicsContext gc, final double tileSize, final World world) {
     this.gc = gc;
     this.tileSize = tileSize;
+    this.world = world;
     this.warningColor = WARNING_COLOR;
   }
 
-  void paint(final World world) {
-    this.world = world;
+  void paint() {
     clearCanvas();
     paintFood();
     paintSnake();
@@ -33,22 +33,22 @@ class Painter {
   void showWarning() {
     gc.setStroke(warningColor);
     gc.setLineWidth(5.0);
-    gc.strokeRect(0, 0, scale(world.getWidth()), scale(world.getHeight()));
+    gc.strokeRect(0.0, 0.0, scale(world.getWidth()), scale(world.getHeight()));
     toggleWarningColor();
   }
 
-  private void toggleWarningColor() {
+  void toggleWarningColor() {
     warningColor = warningColor.equals(WARNING_COLOR)
                    ? BACKGROUND_COLOR
                    : WARNING_COLOR;
   }
 
-  private void clearCanvas() {
+  void clearCanvas() {
     gc.setFill(BACKGROUND_COLOR);
-    gc.fillRect(0, 0, scale(world.getWidth()), scale(world.getHeight()));
+    gc.fillRect(0.0, 0.0, scale(world.getWidth()), scale(world.getHeight()));
   }
 
-  private void paintFood() {
+  void paintFood() {
     final Set<Coordinate> food = world.getFood();
     gc.setFill(Color.DARKOLIVEGREEN);
     for (final Coordinate bite : food) {
@@ -59,7 +59,7 @@ class Painter {
     }
   }
 
-  private void paintSnake() {
+  void paintSnake() {
     final Snake snake = world.getSnake();
     gc.setFill(Color.CORNFLOWERBLUE);
     for (final Coordinate segment : snake.getSegments()) {

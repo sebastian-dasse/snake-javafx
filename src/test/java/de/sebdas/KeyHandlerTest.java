@@ -18,8 +18,7 @@ class KeyHandlerTest {
 
   @BeforeEach
   void test_setup() {
-    keyHandler = new KeyHandler(snakeGameMock);
-    keyHandler.setWorld(worldMock);
+    keyHandler = new KeyHandler(snakeGameMock, worldMock);
   }
 
   @Nested

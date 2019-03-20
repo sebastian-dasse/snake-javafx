@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -26,24 +25,21 @@ public class SnakeGame extends Application {
   }
 
   private final Canvas canvas;
+  private final World world;
   private GameLoop gameLoop;
   private KeyHandler keyHandler;
 
   public SnakeGame() {
     this.canvas = new Canvas();
-    final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    this.gameLoop = new GameLoop(new Painter(graphicsContext, TILE_SIZE), GameLoop::createAnimationTimer);
-    this.keyHandler = new KeyHandler(this);
+    this.world = new World();
 
-    createWorld();
-  }
+    final Painter painter = new Painter(canvas.getGraphicsContext2D(), TILE_SIZE, world);
 
-  private void createWorld() {
-    final World world = new World();
+    this.gameLoop = new GameLoop(world, painter, GameLoop::createAnimationTimer);
+    this.keyHandler = new KeyHandler(this, world);
+
     canvas.setWidth(scale(world.getWidth()));
     canvas.setHeight(scale(world.getHeight()));
-    gameLoop.setWorld(world);
-    keyHandler.setWorld(world);
   }
 
   @Override
@@ -80,7 +76,7 @@ public class SnakeGame extends Application {
 
   void reset() {
     gameLoop.stop();
-    createWorld();
+    world.reset();
     gameLoop.start();
   }
 

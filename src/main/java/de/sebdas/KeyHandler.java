@@ -2,7 +2,7 @@ package de.sebdas;
 
 class KeyHandler {
   private final SnakeGame snakeGame;
-  private World world;
+  private final World world;
   private Decision decision;
 
   private enum Decision {
@@ -21,14 +21,10 @@ class KeyHandler {
     }
   }
 
-  KeyHandler(final SnakeGame snakeGame) {
+  KeyHandler(final SnakeGame snakeGame, final World world) {
     this.snakeGame = snakeGame;
-    this.world = null;
-    this.decision = Decision.UNDECIDED;
-  }
-
-  void setWorld(final World world) {
     this.world = world;
+    this.decision = Decision.UNDECIDED;
   }
 
   void onLeft() {

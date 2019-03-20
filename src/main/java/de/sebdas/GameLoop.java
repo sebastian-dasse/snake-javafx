@@ -9,16 +9,14 @@ class GameLoop {
 
   private final Painter painter;
   private final AnimationTimer animationTimer;
-  private World world;
+  private final World world;
 
-  GameLoop(final Painter painter, final Function<GameLoop, AnimationTimer> animationTimerCreator) {
+  GameLoop(final World world, final Painter painter, final Function<GameLoop, AnimationTimer> animationTimerCreator) {
     this.painter = painter;
     this.animationTimer = animationTimerCreator.apply(this);
-  }
-
-  void setWorld(final World world) {
     this.world = world;
-    world.addListener(observable -> painter.paint(world));
+
+    this.world.addListener(observable -> this.painter.paint());
   }
 
   AnimationTimer createAnimationTimer() {
@@ -44,7 +42,7 @@ class GameLoop {
   }
 
   void start() {
-    painter.paint(world);
+    painter.paint();
     animationTimer.start();
   }
 

@@ -6,27 +6,32 @@ import javafx.beans.Observable;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toSet;
 
 class World implements Observable {
   private static final int WIDTH_TILES = 15;
   private static final int HEIGHT_TILES = 10;
 
-  private Snake snake;
   private final List<InvalidationListener> listeners;
   private final Random random;
   private final Set<Coordinate> food;
+  private Snake snake;
   boolean paused;
 
   World() {
-    this.snake = new Snake(createInitialHead(), this::move);
     this.listeners = new ArrayList<>();
     this.random = new Random(System.nanoTime());
-    this.food = createFood();
-    this.paused = false;
+    this.food = new HashSet<>();
+    reset();
   }
 
-  private Coordinate createInitialHead() {
+  void reset() {
+    this.snake = new Snake(initialHead(), this::move);
+    this.paused = false;
+    setFood(createFood());
+  }
+
+  private Coordinate initialHead() {
     return new Coordinate(getWidth() / 2, getHeight() / 2);
   }
 
@@ -117,7 +122,7 @@ class World implements Observable {
     final int biteCount = random.nextInt(2) + 1;
     return Stream.generate(this::createRandomCoordinate)
                  .limit(biteCount)
-                 .collect(toCollection(HashSet::new));
+                 .collect(toSet());
   }
 
   private Coordinate createRandomCoordinate() {
