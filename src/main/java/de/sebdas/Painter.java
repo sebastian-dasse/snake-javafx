@@ -24,6 +24,10 @@ class Painter {
     this.warningColor = WARNING_COLOR;
   }
 
+  Paint getWarningColor() {
+    return warningColor;
+  }
+
   void paint() {
     clearCanvas();
     paintFood();

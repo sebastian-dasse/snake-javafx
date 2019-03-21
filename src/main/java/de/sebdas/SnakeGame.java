@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import java.util.Map;
 
 public class SnakeGame extends Application {
-  private static final double TILE_SIZE = 50.0;
+  static final double TILE_SIZE = 50.0;
 
   /* the main allows it to start the application with Gradle, otherwise it's not mandatory for a JavaFX Application */
   public static void main(final String[] args) {
