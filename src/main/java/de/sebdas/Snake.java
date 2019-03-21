@@ -1,9 +1,6 @@
 package de.sebdas;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -14,7 +11,7 @@ class Snake {
 
   private final Deque<Coordinate> segments;
   private final BiFunction<Coordinate, Direction, Coordinate> move;
-  Direction direction;
+  private Direction direction;
   private boolean collision;
 
   Snake(final Coordinate initialHead, final BiFunction<Coordinate, Direction, Coordinate> move) {
@@ -36,6 +33,10 @@ class Snake {
 
   Collection<Coordinate> getSegments() {
     return Collections.unmodifiableCollection(segments);
+  }
+
+  Direction getDirection() {
+    return direction;
   }
 
   boolean noCollisionDetected() {

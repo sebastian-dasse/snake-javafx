@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -82,19 +83,21 @@ class WorldTest {
   @DisplayName("reset()")
   class Testing_reset {
 
+    private Set<Coordinate> fakeFood = Set.of(new Coordinate(-1, -1));
+
     @BeforeEach
     void setup() {
-      final Set<Coordinate> initialFood = Set.of(INITIAL_SNAKE_HEAD);
-      world.setFood(initialFood);
+      final Snake snakeMock = mock(Snake.class);
+      when(snakeMock.getHead()).thenReturn(new Coordinate(8, 5));
+      when(snakeMock.getSegments()).thenReturn(List.of(new Coordinate(8, 5),
+                                                       new Coordinate(8, 6),
+                                                       new Coordinate(9, 6),
+                                                       new Coordinate(9, 5)));
+      when(snakeMock.getDirection()).thenReturn(Directions.up());
+      when(snakeMock.noCollisionDetected()).thenReturn(false);
 
-      world.pulse();
-      world.pulse();
-      world.onDown();
-      world.pulse();
-      world.onLeft();
-      world.pulse();
-      world.onUp();
-      world.pulse();
+      world.setSnake(snakeMock);
+      world.setFood(fakeFood);
       world.togglePause();
 
       assertThat(world.getSnake())
@@ -106,7 +109,7 @@ class WorldTest {
           )
           .hasDirection(Directions.up())
           .hasCollision();
-      assertThat(world.getFood()).isNotEqualTo(initialFood); // be aware that there is a slight chance of collision here
+      assertThat(world.getFood()).isEqualTo(fakeFood);
       assertThat(world.isPaused()).isTrue();
     }
 
@@ -130,6 +133,7 @@ class WorldTest {
       //noinspection Convert2MethodRef
       assertThat(world.getFood())
           .isNotEmpty()
+          .isNotEqualTo(fakeFood)
           .hasSizeLessThanOrEqualTo(MAX_FOOD)
           .allMatch(coordinate -> isInWorldBounds(coordinate));
     }

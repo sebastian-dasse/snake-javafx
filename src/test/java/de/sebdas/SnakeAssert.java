@@ -27,15 +27,15 @@ class SnakeAssert extends AbstractAssert<SnakeAssert, Snake> {
   SnakeAssert hasHeadAt(final Coordinate head) {
     isNotNull();
     Assertions.assertThat(actual.getHead())
-              .withFailMessage("Expected snake's direction to be <%s> but was <%s>", head, actual.getHead())
+              .withFailMessage("Expected snake's head to be <%s> but was <%s>", head, actual.getHead())
               .isEqualTo(head);
     return this;
   }
 
   SnakeAssert hasDirection(final Direction direction) {
     isNotNull();
-    if (!Objects.equals(actual.direction, direction)) {
-      failWithMessage("Expected snake's direction to be <%s> but was <%s>", direction, actual.direction);
+    if (!Objects.equals(actual.getDirection(), direction)) {
+      failWithMessage("Expected snake's direction to be <%s> but was <%s>", direction, actual.getDirection());
     }
     return this;
   }
