@@ -11,6 +11,7 @@
 - [x] pause and resume
 - [ ] increased snake speed over time
 - [ ] score
+- [x] unit tests
 
 ## Nice to have
 - [ ] improve random food distribution
